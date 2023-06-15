@@ -23,4 +23,4 @@ Admin of this application can
 *	Manage affiliate links 
 
 ## How to start the project
-Use the command "npm start" to run the project
+Use the command "npm start" to run the project in visual studio code application

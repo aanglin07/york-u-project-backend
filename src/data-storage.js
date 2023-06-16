@@ -1,29 +1,24 @@
-//This module is used for data storage in the form of arrays
+//This module is used for temporary data storage in the form of arrays
 
 let jerseyRatings = [
     {
-        userId : 1,
         jerseyID: 2,
-        rating : 4,
+        rating : 0,
     },
     {
-        userId : 2,
         jerseyID: 3,
-        rating: 5
+        rating: 0
 
     },
     {
-        userId : 1,
         jerseyID: 3,
         rating: 5
     },
     {
-        userId : 1,
         jerseyID: 3,
         rating: 1
     },
     {
-        userId : 2,
         jerseyID: 3,
         rating: 1
     }

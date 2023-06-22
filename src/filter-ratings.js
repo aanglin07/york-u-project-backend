@@ -7,9 +7,12 @@ eg. If the user chooses 5, all the products with a rating of 5 will be returned*
 import jerseyRatings from "./data-storage.js" //Imports from data storage module
 import getRated from "./getRatings.js"
 
+
 function ratingsFilter(a){
+
+    
     if(a < 1 || a > 5){
-        console.log("Enter a value from 1 to 5") //For testing purposes, this if statement captures values outside the range
+        return null //For testing purposes, this if statement captures values outside the range
     }
     else{
         console.log("All products that have been rated") 
@@ -18,7 +21,8 @@ function ratingsFilter(a){
         console.log("********************")
         
         console.log("Now showing rated products with a value of " + a)
-        jerseyRatings.filter(i=>i.rating == a).forEach(result => console.log(result))  //filters products with a specific rating
+       jerseyRatings.filter(i=>i.rating == a).forEach(result => console.log(result)) //filters products with a specific rating
+        
     }
 }
 

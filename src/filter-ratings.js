@@ -4,7 +4,7 @@ by choosing from a pre-defined list .
 
 eg. If the user chooses 5, all the products with a rating of 5 will be returned*/
 
-import jerseyRatings from "./data-storage.js" //Imports from data storage module
+import {jerseyRatings} from "./data-storage.js" //Imports from data storage module
 import getRated from "./getRatings.js"
 
 

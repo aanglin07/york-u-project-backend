@@ -1,4 +1,4 @@
-import jerseyRatings from "./data-storage.js"
+import {jerseyRatings} from "./data-storage.js"
 
 
 /*This module returns all products that has a rating. Since a user cannot give a rating of 0. 

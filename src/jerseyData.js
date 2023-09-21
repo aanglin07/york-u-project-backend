@@ -52,4 +52,43 @@ router.get('/:id', (req, res) => {
     }
 })
 
+//Router to update items using a patch request
+router.patch('/:id', (req, res) =>{
+    let id = parseInt(req.params.id)
+    let updateJersey = jerseyData.findIndex(jersey => jersey.id === id);
+    const replacementJersey = {
+        id:id,
+        img: req.body.img || updateJersey.img,
+        teamName: req.body.teamName || updateJersey.teamName,
+        teamKit: req.body.teamKit || updateJersey.teamKit,
+        Year: req.body.Year || updateJersey.Year,
+        description: req.body.description || updateJersey.description,
+        category: req.body.category || updateJersey.category,
+        purchaseLink:req.body.purchaseLink || updateJersey.purchaseLink
+    };
+
+    const searchIndex = jerseyData.findIndex(jersey => jersey.id === id);
+    jerseyData[searchIndex] = replacementJersey;
+    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'category', 'purchaseLink']
+    let missingProperties = []
+    requiredProperties.forEach(prop => {
+        if (!req.body.hasOwnProperty(prop)) {
+            missingProperties.push(prop)
+        }
+    })
+
+    if (missingProperties.length){
+        let errorMessage = []
+        missingProperties.forEach(prop => {
+            errorMessage.push(`Missing property: ${prop}`)
+        })
+        return res.status(400).json({ errors: errorMessage })
+    }
+    
+    if (replacementJersey){
+        return res.status(200).json(replacementJersey);  
+    }    
+
+})
+
 export default router

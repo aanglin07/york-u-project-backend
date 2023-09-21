@@ -40,4 +40,16 @@ router.post('/', (req, res) => {
     return res.status(201).json(req.body)
 })
 
+//Router to get items by id
+router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const result = jerseyData.find((jersey) => jersey.id === id);
+    if (result){
+    return res.status(200).json(result);
+    }
+    else{
+        res.status(404).json({ message: "Item not found"})
+    }
+})
+
 export default router

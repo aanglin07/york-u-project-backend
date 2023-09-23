@@ -63,9 +63,39 @@ const jerseyData = [
       teamKit: "Home Kit",    
       Year: "2022",
       description:"Turned up or pressed down, the humble polo collar has played a starring role in many of Manchester United's biggest moments. Making a comeback on this adidas football jersey, it joins a shield-style badge and engineered pinstripe graphic to produce an eye-catching look. Moisture-absorbing AEROREADY and mesh panels make it a comfortable choice for passionate supporters. Made with 100% recycled materials, this product represents just one of adidas's solutions to help end plastic waste." ,
-      category: "English Premier League",
+      leagueName: "English Premier League",
       purchaseLink:"https://www.sportchek.ca/en/pdp/manchester-united-fc-2022-23-adidas-men-s-replica-soccer-jersey-man-utd-football-epl-65031015f.333923339.html?gclid=CjwKCAjwoqGnBhAcEiwAwK-OkTjiyeOdoevznMyWnEeSKJ3w9wg0J5D-ClSX6GABbVilZaolri_z1hoC6OkQAvD_BwE&gclsrc=aw.ds"
     }
-  ]; 
+  ]
   
-  export {jerseyData, jerseyRatings};
+  const League = [
+    {
+      id:1,
+      leagueName: "English Premier League"
+    },
+    {
+      id:2,
+      leagueName: "La Liga"
+    },
+    {
+      id:3,
+      leagueName: "Serie A"
+    }
+  ]
+
+  const Team = [
+    {
+      id:1,
+      teamName: "Manchester United"
+    },
+    {
+      id:2,
+      teamName:"Real Madrid"
+    },
+    {
+      id:3,
+      teamName:"Juventus"
+    }
+  ]
+  
+  export {jerseyData, jerseyRatings, League, Team};

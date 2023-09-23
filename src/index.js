@@ -1,6 +1,7 @@
 import express from 'express'
 import jerseyDataRoutes from './jerseyData.js'
 import teamDataRoutes from './teamData.js'
+import leagueDataRoutes from './leagueData.js'
 import ratingsFilter from './filter-ratings.js'; //Imports from module, filter-ratings.
 const app = express()
 const port = 3000
@@ -10,6 +11,7 @@ app.use(express.json())
 app.get('/', (req, res) => res.send('Hello world'))
 app.use('/jersey', jerseyDataRoutes )
 app.use('/teams', teamDataRoutes )
+app.use('/leagues', leagueDataRoutes )
 
 app.listen(port, () => console.log(`API server ready on http://localhost:${port}`))
 

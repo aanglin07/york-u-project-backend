@@ -16,11 +16,11 @@ router.post('/', (req, res) => {
         teamKit: req.body.teamKit,
         Year: req.body.Year,
         description: req.body.description,
-        category: req.body.category,
+        leagueName: req.body.leagueName,
         purchaseLink:req.body.purchaseLink
     }
 
-    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'category', 'purchaseLink']
+    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'leagueName', 'purchaseLink']
     let missingProperties = []
 
     requiredProperties.forEach(prop => {
@@ -40,7 +40,7 @@ router.post('/', (req, res) => {
     return res.status(201).json(req.body)
 })
 
-//Router to get items by id
+//Router to get jersey by id
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const result = jerseyData.find((jersey) => jersey.id === id);
@@ -48,7 +48,7 @@ router.get('/:id', (req, res) => {
     return res.status(200).json(result);
     }
     else{
-        res.status(404).json({ message: "Item not found"})
+        res.status(404).json({ message: "Jersey not found"})
     }
 })
 
@@ -63,13 +63,13 @@ router.patch('/:id', (req, res) =>{
         teamKit: req.body.teamKit || updateJersey.teamKit,
         Year: req.body.Year || updateJersey.Year,
         description: req.body.description || updateJersey.description,
-        category: req.body.category || updateJersey.category,
+        leagueName: req.body.leagueName || updateJersey.leagueName,
         purchaseLink:req.body.purchaseLink || updateJersey.purchaseLink
     };
 
     const searchIndex = jerseyData.findIndex(jersey => jersey.id === id);
     jerseyData[searchIndex] = replacementJersey;
-    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'category', 'purchaseLink']
+    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'leagueName', 'purchaseLink']
     let missingProperties = []
     requiredProperties.forEach(prop => {
         if (!req.body.hasOwnProperty(prop)) {

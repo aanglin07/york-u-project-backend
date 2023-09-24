@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 //import ratingsFilter from './filter-ratings.js'; //Imports from module, filter-ratings.
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT
 
 // allows us to parse json 
 app.use(express.json())

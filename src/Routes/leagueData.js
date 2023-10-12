@@ -52,6 +52,7 @@ router.get('/:id', (req, res) => {
 
 router.patch('/:id', (req, res) =>{
     let id = parseInt(req.params.id)
+    const { leagueName } = req.body
     let updateleague = League.findIndex(league => league.id === id);
     const replacementLeague = {
         id:id,        
@@ -60,21 +61,14 @@ router.patch('/:id', (req, res) =>{
 
     const searchIndex = League.findIndex(league => league.id === id);
     League[searchIndex] = replacementLeague;
-    const requiredProperties = ['leagueName']
-    let missingProperties = []
-    requiredProperties.forEach(prop => {
-        if (!req.body.hasOwnProperty(prop)) {
-            missingProperties.push(prop)
-        }
-    })
-
-    if (missingProperties.length){
-        let errorMessage = []
-        missingProperties.forEach(prop => {
-            errorMessage.push(`Missing property: ${prop}`)
-        })
-        return res.status(400).json({ errors: errorMessage })
+    
+    if (searchIndex == -1) {
+        return res.status(404).json( { error: `${id} not found`})
     }
+    
+    if (!leagueName) {
+        return res.status(400).json( { error: 'cannot update to an empty league name'})
+    }  
     
     if (replacementLeague){
         return res.status(200).json(replacementLeague);  

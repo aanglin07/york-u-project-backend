@@ -1,11 +1,9 @@
 import express from 'express'
 import { jerseyData } from '../data-storage.js'
+import {validateNewJersey, findJersey, updateJersey} from '../../lib/middleware/validateJersey.js'
 const router = express.Router()
-router.get('/', (req, res) => {
-    return res.json(jerseyData)
-})
 
-router.post('/', (req, res) => {
+router.post('/', validateNewJersey, (req, res) => {
 
     const jerseyId = jerseyData.map(jersey => jersey.id);
     const newId = Math.max(...jerseyId) + 1;
@@ -20,40 +18,25 @@ router.post('/', (req, res) => {
         purchaseLink:req.body.purchaseLink
     }
 
-    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'leagueName', 'purchaseLink']
-    let missingProperties = []
-
-    requiredProperties.forEach(prop => {
-        if (!req.body.hasOwnProperty(prop)) {
-            missingProperties.push(prop)
-        }
-    })
-
-    if (missingProperties.length){
-        let errorMessage = []
-        missingProperties.forEach(prop => {
-            errorMessage.push(`Missing property: ${prop}`)
-        })
-        return res.status(400).json({ errors: errorMessage })
-    }
+    
     jerseyData.push(newJersey);
     return res.status(201).json(req.body)
 })
 
+router.get('/', (req, res) => {
+    return res.json(jerseyData)
+})
+
+
+
 //Router to get jersey by id
-router.get('/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const result = jerseyData.find((jersey) => jersey.id === id);
-    if (result){
+router.get('/:id', findJersey, (req, res) => {
+    const result = jerseyData[req.foundResultIndex]
     return res.status(200).json(result);
-    }
-    else{
-        res.status(404).json({ message: "Jersey not found"})
-    }
 })
 
 //Router to update items using a patch request
-router.patch('/:id', (req, res) =>{
+router.patch('/:id', updateJersey, (req, res) =>{
     let id = parseInt(req.params.id)
     let updateJersey = jerseyData.findIndex(jersey => jersey.id === id);
     const replacementJersey = {
@@ -69,21 +52,6 @@ router.patch('/:id', (req, res) =>{
 
     const searchIndex = jerseyData.findIndex(jersey => jersey.id === id);
     jerseyData[searchIndex] = replacementJersey;
-    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'leagueName', 'purchaseLink']
-    let missingProperties = []
-    requiredProperties.forEach(prop => {
-        if (!req.body.hasOwnProperty(prop)) {
-            missingProperties.push(prop)
-        }
-    })
-
-    if (missingProperties.length){
-        let errorMessage = []
-        missingProperties.forEach(prop => {
-            errorMessage.push(`Missing property: ${prop}`)
-        })
-        return res.status(400).json({ errors: errorMessage })
-    }
     
     if (replacementJersey){
         return res.status(200).json(replacementJersey);  

@@ -4,8 +4,8 @@ import teamDataRoutes from '../src/Routes/teamData.js'
 import leagueDataRoutes from '../src/Routes/leagueData.js'
 import dotenv from 'dotenv'
 import jsonwebtoken from 'jsonwebtoken'
-import jwtVerify from '../lib/middleware/jwtVerify.js'
-// import {expressjwt as jwt} from 'express-jwt'
+// import jwtVerify from '../lib/middleware/jwtVerify.js'
+import {expressjwt as jwt} from 'express-jwt'
 dotenv.config()
 //import ratingsFilter from './filter-ratings.js'; //Imports from module, filter-ratings.
 const app = express()
@@ -27,7 +27,7 @@ app.post('/login', (req, res) => {
     return res.status(401).json({error: "incorrect username \ password"})
 })
 
-app.use(jwtVerify)
+app.use( jwt({secret: process.env.JWT_SECRET, algorithms: ['HS256']}) )
 
 app.get('/protected', (req, res) => {
     res.json({message: "You made it!", user: req.user}) 

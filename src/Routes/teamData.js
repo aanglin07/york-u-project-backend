@@ -1,5 +1,7 @@
 import express from 'express'
 import { Team } from '../data-storage.js'
+import { validateNewTeam, findTeam, updateTeam } from '../../lib/middleware/validateTeam.js'
+import verifyToken from '../../lib/middleware/jwtVerify.js'
 const router = express.Router()
 router.get('/', (req, res) => {
     return res.json(Team)
@@ -7,7 +9,7 @@ router.get('/', (req, res) => {
 
 
 //Router to add a team
-router.post('/', (req, res) => {
+router.post('/', verifyToken, validateNewTeam, (req, res) => {
 
     const teamId = Team.map(team => team.id);
     const newId = Math.max(...teamId) + 1;
@@ -37,7 +39,7 @@ router.post('/', (req, res) => {
 })
 
 //Router to get team by id
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, findTeam, (req, res) => {
     const id = parseInt(req.params.id);
     const result = Team.find((team) => team.id === id);
     if (result){
@@ -50,7 +52,7 @@ router.get('/:id', (req, res) => {
 
 //Router to Edit team name
 
-router.patch('/:id', (req, res) =>{
+router.patch('/:id', verifyToken, updateTeam, (req, res) =>{
     let id = parseInt(req.params.id)
     let updateTeam = Team.findIndex(team => team.id === id);
     const replacementTeam = {

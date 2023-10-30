@@ -1,9 +1,23 @@
 import express from 'express'
 import { jerseyData } from '../data-storage.js'
 import {validateNewJersey, findJersey, updateJersey} from '../../lib/middleware/validateJersey.js'
+import verifyToken from '../../lib/middleware/jwtVerify.js'
 const router = express.Router()
 
-router.post('/', validateNewJersey, (req, res) => {
+router.get('/', (req, res) => {
+    return res.json(jerseyData)
+})
+
+
+
+//Router to get jersey by id
+router.get('/:id', findJersey, (req, res) => {
+    const result = jerseyData[req.foundResultIndex]
+    return res.status(200).json(result);
+})
+
+
+router.post('/', verifyToken, validateNewJersey, (req, res) => {
 
     const jerseyId = jerseyData.map(jersey => jersey.id);
     const newId = Math.max(...jerseyId) + 1;
@@ -23,20 +37,9 @@ router.post('/', validateNewJersey, (req, res) => {
     return res.status(201).json(req.body)
 })
 
-router.get('/', (req, res) => {
-    return res.json(jerseyData)
-})
-
-
-
-//Router to get jersey by id
-router.get('/:id', findJersey, (req, res) => {
-    const result = jerseyData[req.foundResultIndex]
-    return res.status(200).json(result);
-})
 
 //Router to update items using a patch request
-router.patch('/:id', updateJersey, (req, res) =>{
+router.patch('/:id', verifyToken, updateJersey, (req, res) =>{
     let id = parseInt(req.params.id)
     let updateJersey = jerseyData.findIndex(jersey => jersey.id === id);
     const replacementJersey = {

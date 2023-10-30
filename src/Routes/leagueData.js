@@ -1,6 +1,7 @@
 import express from 'express'
 import { League } from '../data-storage.js'
 import { validateNewLeague, findLeague, updateLeague } from '../../lib/middleware/validateLeague.js'
+import verifyToken from '../../lib/middleware/jwtVerify.js'
 const router = express.Router()
 router.get('/', (req, res) => {
     return res.json(League)
@@ -8,7 +9,7 @@ router.get('/', (req, res) => {
 
 
 //Router to add a league
-router.post('/', validateNewLeague, (req, res) => {
+router.post('/', verifyToken, validateNewLeague, (req, res) => {
 
     const leagueId = League.map(league => league.id);
     const newId = Math.max(...leagueId) + 1;
@@ -22,7 +23,7 @@ router.post('/', validateNewLeague, (req, res) => {
 })
 
 //Router to get league by id
-router.get('/:id', findLeague, (req, res) => {
+router.get('/:id', verifyToken, findLeague, (req, res) => {
     const result = League[req.foundResultIndex]
 
     return res.status(200).json(result);
@@ -30,7 +31,7 @@ router.get('/:id', findLeague, (req, res) => {
 
 //Router to Edit league name
 
-router.patch('/:id', updateLeague, (req, res) =>{
+router.patch('/:id', verifyToken, updateLeague, (req, res) =>{
     
     const id = parseInt(req.params.id)
     const updateleague = League.findIndex(league => league.id === id);

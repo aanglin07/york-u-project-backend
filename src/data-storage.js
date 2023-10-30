@@ -97,5 +97,12 @@ const jerseyData = [
       teamName:"Juventus"
     }
   ]
+
+  const users = [
+    {
+      username: "admin@test.com", 
+      password: "$argon2i$v=19$m=16,t=2,p=1$S1BoWmd0SU9mdUdiVWh1Wg$QF+EAsI+2rKW/PTSKROSWg"
+    }
+  ]
   
-  export {jerseyData, jerseyRatings, League, Team};
+  export {jerseyData, jerseyRatings, League, Team, users};

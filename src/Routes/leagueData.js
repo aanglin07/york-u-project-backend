@@ -1,51 +1,51 @@
 import express from 'express'
-import { League } from '../data-storage.js'
-import { validateNewLeague, findLeague, updateLeague } from '../../lib/middleware/validateLeague.js'
 import verifyToken from '../../lib/middleware/jwtVerify.js'
+import {leagues} from '../models/League.js'
+import { findLeague, validateNewLeague, updateLeague, leagueExists } from '../../lib/middleware/validateLeague.js'
 const router = express.Router()
-router.get('/', (req, res) => {
-    return res.json(League)
+router.get('/', async (req, res) => {
+    const result = await leagues.findAll();
+    return res.send(result.toJSON());
 })
+router.post('/', verifyToken, validateNewLeague, leagueExists, async (req, res) => {
 
 
-//Router to add a league
-router.post('/', verifyToken, validateNewLeague, (req, res) => {
+const newLeague = new leagues(
+    null,
+    req.body.league_name
+);
 
-    const leagueId = League.map(league => league.id);
-    const newId = Math.max(...leagueId) + 1;
-    const newLeague = {
-        id: newId,       
-        leagueName: req.body.leagueName        
-    }
-    
-    League.push (newLeague);
-    return res.status(201).json(req.body)
+if(!req.body.league_name){
+    return res.status(400).json( { error: 'cannot add an empty league name'})
+}  
+
+newLeague.leaguesave();
+return res.status(201).send(`Added new league: ${newLeague.league_name}`);
+
 })
 
 //Router to get league by id
-router.get('/:id', verifyToken, findLeague, (req, res) => {
-    const result = League[req.foundResultIndex]
-
-    return res.status(200).json(result);
+router.get('/:id', verifyToken, findLeague, async (req, res) => {
+    const id = parseInt(req.params.id);
+    const result = await leagues.findById(id);
+    
+    return res.send(result.toJSON());
 })
 
 //Router to Edit league name
 
-router.patch('/:id', verifyToken, updateLeague, (req, res) =>{
+router.patch('/:id', verifyToken, updateLeague, async (req, res) =>{
+    const id = parseInt(req.params.id, 10)
+    const league = await leagues.findById(id);
     
-    const id = parseInt(req.params.id)
-    const updateleague = League.findIndex(league => league.id === id);
-    const replacementLeague = {
-        id:id,        
-        leagueName: req.body.leagueName || updateleague.leagueName,
-    };
+    if (req.body.league_name) {
+        league.league_name = req.body.league_name;
+    }    
 
-    const searchIndex = League.findIndex(league => league.id === id);
-    League[searchIndex] = replacementLeague;  
-      
-    if (replacementLeague){
-           return res.status(200).json(replacementLeague);  
-     }    
-})
+    await league.leagueUpdate();
+
+    return res.send(league.toJSON());
+});
+
 
 export  default router

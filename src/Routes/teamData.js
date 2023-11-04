@@ -1,87 +1,52 @@
 import express from 'express'
-import { Team } from '../data-storage.js'
-import { validateNewTeam, findTeam, updateTeam } from '../../lib/middleware/validateTeam.js'
+import { validateNewTeam, findTeam, updateTeam, teamExists} from '../../lib/middleware/validateTeam.js'
 import verifyToken from '../../lib/middleware/jwtVerify.js'
+import {teams} from '../models/Team.js'
 const router = express.Router()
-router.get('/', (req, res) => {
-    return res.json(Team)
+router.get('/', async (req, res) => {
+    const result = await teams.findAll();
+    return res.send(result.toJSON());
 })
+router.post('/', verifyToken, validateNewTeam, teamExists, async (req, res) => {
 
 
-//Router to add a team
-router.post('/', verifyToken, validateNewTeam, (req, res) => {
+const newTeam = new teams(
+    null,
+    req.body.team_name
+);
 
-    const teamId = Team.map(team => team.id);
-    const newId = Math.max(...teamId) + 1;
-    const newTeam = {
-        id: newId,       
-        teamName: req.body.teamName        
-    }
+if(!req.body.team_name){
+    return res.status(400).json( { error: 'cannot add an empty team name'})
+}  
 
-    const requiredProperties = ['teamName']
-    let missingProperties = []
+newTeam.teamsave();
+return res.status(201).send(`Added new team: ${newTeam.team_name}`);
 
-    requiredProperties.forEach(prop => {
-        if (!req.body.hasOwnProperty(prop)) {
-            missingProperties.push(prop)
-        }
-    })
-
-    if (missingProperties.length){
-        let errorMessage = []
-        missingProperties.forEach(prop => {
-            errorMessage.push(`Missing property: ${prop}`)
-        })
-        return res.status(400).json({ errors: errorMessage })
-    }
-    Team.push (newTeam);
-    return res.status(201).json(req.body)
 })
 
 //Router to get team by id
-router.get('/:id', verifyToken, findTeam, (req, res) => {
+router.get('/:id', verifyToken, findTeam, async (req, res) => {
     const id = parseInt(req.params.id);
-    const result = Team.find((team) => team.id === id);
-    if (result){
-    return res.status(200).json(result);
-    }
-    else{
-        res.status(404).json({ message: "Team not found"})
-    }
+    const result = await teams.findById(id);
+    
+
+    return res.send(result.toJSON());
 })
 
 //Router to Edit team name
 
-router.patch('/:id', verifyToken, updateTeam, (req, res) =>{
-    let id = parseInt(req.params.id)
-    let updateTeam = Team.findIndex(team => team.id === id);
-    const replacementTeam = {
-        id:id,        
-        teamName: req.body.teamName || updateTeam.teamName,
-    };
-
-    const searchIndex = Team.findIndex(team => team.id === id);
-    Team[searchIndex] = replacementTeam;
-    const requiredProperties = ['teamName']
-    let missingProperties = []
-    requiredProperties.forEach(prop => {
-        if (!req.body.hasOwnProperty(prop)) {
-            missingProperties.push(prop)
-        }
-    })
-
-    if (missingProperties.length){
-        let errorMessage = []
-        missingProperties.forEach(prop => {
-            errorMessage.push(`Missing property: ${prop}`)
-        })
-        return res.status(400).json({ errors: errorMessage })
-    }
+router.patch('/:id', verifyToken, updateTeam, async (req, res) =>{
+    const id = parseInt(req.params.id, 10)
+    const team = await teams.findById(id);    
     
-    if (replacementTeam){
-        return res.status(200).json(replacementTeam);  
+    if (req.body.team_name) {
+        team.team_name = req.body.team_name;
     }    
 
-})
+    await team.teamUpdate();
+
+    return res.send(team.toJSON());
+});
+
 
 export  default router

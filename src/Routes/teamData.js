@@ -3,11 +3,12 @@ import { validateNewTeam, findTeam, updateTeam, teamExists} from '../../lib/midd
 import verifyToken from '../../lib/middleware/jwtVerify.js'
 import {teams} from '../models/Team.js'
 const router = express.Router()
+
 router.get('/', async (req, res) => {
     const result = await teams.findAll();
     return res.send(result.toJSON());
 })
-router.post('/', verifyToken, validateNewTeam, teamExists, async (req, res) => {
+router.post('/', validateNewTeam, teamExists, async (req, res) => {
 
 
 const newTeam = new teams(
@@ -24,7 +25,7 @@ return res.status(201).send(`Added new team: ${newTeam.team_name}`);
 
 })
 
-//Router to get team by id
+//Route to get team by id
 router.get('/:id', verifyToken, findTeam, async (req, res) => {
     const id = parseInt(req.params.id);
     const result = await teams.findById(id);
@@ -33,7 +34,7 @@ router.get('/:id', verifyToken, findTeam, async (req, res) => {
     return res.send(result.toJSON());
 })
 
-//Router to Edit team name
+//Route to Edit team name
 
 router.patch('/:id', verifyToken, updateTeam, async (req, res) =>{
     const id = parseInt(req.params.id, 10)

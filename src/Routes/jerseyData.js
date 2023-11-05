@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 
 
 //Router to get jersey by id
-router.get('/:id', verifyToken, findJersey, async (req, res) => {
+router.get('/:id', findJersey, async (req, res) => {
     const id = parseInt(req.params.id);
     const result = await jerseys.findById(id);
     if (!result) {

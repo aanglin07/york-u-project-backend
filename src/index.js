@@ -20,7 +20,7 @@ const PORT = process.env.PORT
 app.use(express.json())
 
 
-app.get('/', (req, res) => res.send(jerseyData)) //Gets list of all jerseys in the database
+app.get('/', (req, res) => res.send("Welcome to the Jersey App"))
 
 const testFunction = async () => {
     const user = await User.findById(1);
@@ -82,7 +82,7 @@ app.use( jwt({secret: process.env.JWT_SECRET, algorithms: ['HS256']}) )
 app.listen(PORT, () => console.log(`API server ready on http://localhost:${PORT}`))
 
 
-
+export {app};
 
 
 

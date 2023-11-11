@@ -1,89 +1,70 @@
 import express from 'express'
-import { jerseyData } from '../data-storage.js'
+import {validateNewJersey, findJersey, updateJersey} from '../../lib/middleware/validateJersey.js'
+import verifyToken from '../../lib/middleware/jwtVerify.js'
+import {jerseys} from '../models/Jersey.js'
 const router = express.Router()
-router.get('/', (req, res) => {
-    return res.json(jerseyData)
+
+router.get('/', async (req, res) => {
+    const result = await jerseys.findAll();
+    return res.send(result.toJSON());
 })
 
-router.post('/', (req, res) => {
 
-    const jerseyId = jerseyData.map(jersey => jersey.id);
-    const newId = Math.max(...jerseyId) + 1;
-    const newJersey = {
-        id: newId,
-        img: req.body.img,
-        teamName: req.body.teamName,
-        teamKit: req.body.teamKit,
-        Year: req.body.Year,
-        description: req.body.description,
-        leagueName: req.body.leagueName,
-        purchaseLink:req.body.purchaseLink
-    }
-
-    const requiredProperties = ['img', 'teamName', 'teamKit', 'Year', 'description', 'leagueName', 'purchaseLink']
-    let missingProperties = []
-
-    requiredProperties.forEach(prop => {
-        if (!req.body.hasOwnProperty(prop)) {
-            missingProperties.push(prop)
-        }
-    })
-
-    if (missingProperties.length){
-        let errorMessage = []
-        missingProperties.forEach(prop => {
-            errorMessage.push(`Missing property: ${prop}`)
-        })
-        return res.status(400).json({ errors: errorMessage })
-    }
-    jerseyData.push(newJersey);
-    return res.status(201).json(req.body)
-})
 
 //Router to get jersey by id
-router.get('/:id', (req, res) => {
+router.get('/:id', findJersey, async (req, res) => {
     const id = parseInt(req.params.id);
-    const result = jerseyData.find((jersey) => jersey.id === id);
-    if (result){
-    return res.status(200).json(result);
+    const result = await jerseys.findById(id);
+    if (!result) {
+        return res.status(404).send('Jersey not found.');
     }
-    else{
-        res.status(404).json({ message: "Jersey not found"})
-    }
+
+    return res.send(result.toJSON());
 })
 
-//Router to update items using a patch request
-router.patch('/:id', (req, res) =>{
-    let id = parseInt(req.params.id)
-    const { img, teamName, teamKit, Year, description, leagueName, purchaseLink } = req.body
-    let updateJersey = jerseyData.findIndex(jersey => jersey.id === id);
-    const replacementJersey = {
-        id:id,
-        img: req.body.img || updateJersey.img,
-        teamName: req.body.teamName || updateJersey.teamName,
-        teamKit: req.body.teamKit || updateJersey.teamKit,
-        Year: req.body.Year || updateJersey.Year,
-        description: req.body.description || updateJersey.description,
-        leagueName: req.body.leagueName || updateJersey.leagueName,
-        purchaseLink:req.body.purchaseLink || updateJersey.purchaseLink
-    };
 
-    const searchIndex = jerseyData.findIndex(jersey => jersey.id === id);
-    jerseyData[searchIndex] = replacementJersey;
-   
-    if (searchIndex == -1) {
-        return res.status(404).json( { error: `${id} not found`})
-    }
+router.post('/', verifyToken, validateNewJersey, (req, res) => {
 
-    if (!img || !teamName || !teamKit || !Year || !description || !leagueName || !purchaseLink) {
-        return res.status(400).json( { error: 'cannot update to an empty task'})
-    }    
-   
+    const newJersey = new jerseys(
+        null,        
+        req.body.img,
+        req.body.team_name,
+        req.body.team_kit,
+        req.body.year,
+        req.body.description,
+        req.body.league_name,
+        req.body.purchase_link,
+
+    );
+
+
     
-    if (replacementJersey){
-        return res.status(200).json(replacementJersey);  
-    }    
+newJersey.jerseysave();
+return res.status(201).send(`Added new Jersey`);
 
 })
+
+
+//Router to update jerseys using a patch request
+router.patch('/:id', verifyToken, updateJersey, async (req, res) =>{
+    const id = parseInt(req.params.id)
+    const updateJersey = await jerseys.findById(id);
+   
+
+    if (req.body.img || req.body.team_name || req.body.team_kit || req.body.year || req.body.description || req.body.league_name || req.body.purchase_link) {
+        updateJersey.img = req.body.img;
+        updateJersey.team_name = req.body.team_name;
+        updateJersey.team_kit = req.body.team_kit;
+        updateJersey.year = req.body.year;
+        updateJersey.description = req.body.description;
+        updateJersey.league_name = req.body.league_name;
+        updateJersey.purchase_link = req.body.purchase_link;
+    }    
+    await updateJersey.jerseyUpdate();
+    return res.send(updateJersey.toJSON());  
+   
+})
+
+
 
 export default router

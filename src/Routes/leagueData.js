@@ -40,6 +40,7 @@ router.patch('/:id', verifyToken, updateLeague, async (req, res) =>{
     
     if (req.body.league_name) {
         league.league_name = req.body.league_name;
+
     }    
 
     await league.leagueUpdate();

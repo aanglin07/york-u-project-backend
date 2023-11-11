@@ -30,7 +30,6 @@ router.get('/:id', verifyToken, findTeam, async (req, res) => {
     const id = parseInt(req.params.id);
     const result = await teams.findById(id);
     
-
     return res.send(result.toJSON());
 })
 
@@ -42,6 +41,7 @@ router.patch('/:id', verifyToken, updateTeam, async (req, res) =>{
     
     if (req.body.team_name) {
         team.team_name = req.body.team_name;
+
     }    
 
     await team.teamUpdate();

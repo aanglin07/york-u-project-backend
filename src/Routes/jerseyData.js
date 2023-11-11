@@ -37,6 +37,7 @@ router.post('/', verifyToken, validateNewJersey, (req, res) => {
 
     );
 
+
     
 newJersey.jerseysave();
 return res.status(201).send(`Added new Jersey`);

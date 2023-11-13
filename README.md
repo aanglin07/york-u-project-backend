@@ -25,5 +25,8 @@ Use the command "npm start" to run the project in visual studio code application
 Use the command "npm run dev", this runs the project in the development mode,
 on http://localhost:3000 to view it in your browser and also in Thunder Client or Postman to make use of the different routes created within the project.
 
+## Url link for frontend connected to backend on GCP
+https://jersey-app-e6s2f3kjuq-nn.a.run.app
+
 
 You may also see any lint errors in the console.

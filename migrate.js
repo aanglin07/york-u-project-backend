@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { db } from "./src/models/dbconnection.js";
+import { db } from "./index.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);

@@ -1,19 +1,36 @@
 import express from 'express'
-import jerseyDataRoutes from '../src/Routes/jerseyData.js'
-import teamDataRoutes from '../src/Routes/teamData.js'
-import leagueDataRoutes from '../src/Routes/leagueData.js'
-import userDataRoutes from '../src/Routes/user.js'
-import dotenv from 'dotenv'
+import jerseyDataRoutes from './src/Routes/jerseyData.js'
+import teamDataRoutes from './src/Routes/teamData.js'
+import leagueDataRoutes from './src/Routes/leagueData.js'
+import userDataRoutes from './src/Routes/user.js'
 import jsonwebtoken from 'jsonwebtoken'
 import {expressjwt as jwt} from 'express-jwt'
 import argon2 from 'argon2'
-import { jerseyData} from './data-storage.js'
-import { User } from './models/User.js'
+import { User } from './src/models/User.js'
 import {v4} from 'uuid'
+import dotenv from 'dotenv'
+
+import Db from 'mysql2-async'
 dotenv.config()
+
+const db = new Db({
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME
+})
+
+if (process.env.DATABASE_SOCKET) {
+    db.socketPath = process.env.DATABASE_SOCKET
+} else {
+    db.host = process.env.DATABASE_HOST
+}
+
+const PORT = process.env.ENV_PORT || 8080
+
+
 //import ratingsFilter from './filter-ratings.js'; //Imports from module, filter-ratings.
 const app = express()
-const PORT = process.env.PORT
+
 
 
 // allows us to parse json 
@@ -22,12 +39,7 @@ app.use(express.json())
 
 app.get('/', (req, res) => res.send("Welcome to the Jersey App"))
 
-const testFunction = async () => {
-    const user = await User.findById(1);
-    console.log("User", user)
-}
 
-testFunction(); //Test connection to database
 
 
 app.use('/user', userDataRoutes)
@@ -82,7 +94,7 @@ app.use( jwt({secret: process.env.JWT_SECRET, algorithms: ['HS256']}) )
 app.listen(PORT, () => console.log(`API server ready on http://localhost:${PORT}`))
 
 
-export {app};
+export {app, db};
 
 
 

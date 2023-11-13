@@ -1,4 +1,4 @@
-import { db } from "./dbconnection.js";
+import { db } from "../../index.js";
 
 export class teams {
     constructor(id, team_name) {

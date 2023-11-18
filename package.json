@@ -11,7 +11,7 @@
     "test": "mocha './test/**/*.js'"
   },
   "keywords": [],
-  "author": "",
+  "author": "Anthony Anglin",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.10",

@@ -1,19 +1,24 @@
 import express from 'express'
-import jerseyDataRoutes from '../src/Routes/jerseyData.js'
-import teamDataRoutes from '../src/Routes/teamData.js'
-import leagueDataRoutes from '../src/Routes/leagueData.js'
-import userDataRoutes from '../src/Routes/user.js'
-import dotenv from 'dotenv'
+import jerseyDataRoutes from './src/Routes/jerseyData.js'
+import teamDataRoutes from './src/Routes/teamData.js'
+import leagueDataRoutes from './src/Routes/leagueData.js'
+import userDataRoutes from './src/Routes/user.js'
 import jsonwebtoken from 'jsonwebtoken'
 import {expressjwt as jwt} from 'express-jwt'
 import argon2 from 'argon2'
-import { jerseyData} from './data-storage.js'
-import { User } from './models/User.js'
+import { User } from './src/models/User.js'
 import {v4} from 'uuid'
-dotenv.config()
+import dotenv from 'dotenv'
+
+dotenv.config()  
+
+// 
+
+const PORT = process.env.PORT || 3000
+
 //import ratingsFilter from './filter-ratings.js'; //Imports from module, filter-ratings.
 const app = express()
-const PORT = process.env.PORT
+
 
 
 // allows us to parse json 
@@ -22,12 +27,7 @@ app.use(express.json())
 
 app.get('/', (req, res) => res.send("Welcome to the Jersey App"))
 
-const testFunction = async () => {
-    const user = await User.findById(1);
-    console.log("User", user)
-}
 
-testFunction(); //Test connection to database
 
 
 app.use('/user', userDataRoutes)

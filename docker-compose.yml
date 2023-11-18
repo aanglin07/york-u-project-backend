@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+    app: #defines the app container
+        build:
+            context: .  #uses the Dockerfile found in current folder
+        ports: #need to setup port mapping
+            - "8090:8080"
+        depends_on: #we need the database server for this container to be functional
+            - db
+    
+    db:
+        image: mysql:5.7 #we are getting this from a pre-built image
+        environment: #set the environment variables as per instructions on docker hub
+            MYSQL_ROOT_PASSWORD: "testroot"
+            MYSQL_USER: "Admin"
+            MYSQL_PASSWORD: "admin"
+            MYSQL_DATABASE: "jerseyappdb"
+        ports: #need to be able to connect to the db as well
+            - "9000:3306"

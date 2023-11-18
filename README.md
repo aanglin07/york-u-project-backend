@@ -26,4 +26,13 @@ Use the command "npm run dev", this runs the project in the development mode,
 on http://localhost:3000 to view it in your browser and also in Thunder Client or Postman to make use of the different routes created within the project.
 
 
+## How to build and run the docker container
+* Use the command "docker build -t jersey_app_mysql .", this will build the image.
+* Use the command "docker run -p Host_Port:3000 jersey_app_mysql", this will run the docker container. HOST_PORT is any random number that you want to use on your machine as the port number.
+* Use the command "docker container ls", this will display the running containers.
+  
+## Url link for frontend connected to backend on GCP
+https://jersey-app-e6s2f3kjuq-nn.a.run.app
+
+
 You may also see any lint errors in the console.

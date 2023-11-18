@@ -1,4 +1,4 @@
-import { db } from "./dbconnection.js";
+import db from "./dbconnection.js";
 
 export class jerseys {
     constructor(id, img, team_name, team_kit, year, description, league_name, purchase_link) {
@@ -17,11 +17,12 @@ export class jerseys {
         if (row) {
             return new jerseys(...Object.values(row));
         }
+        
         return null;
     }
-
+    
     static async findAll() {
-        const row = await db.getall("SELECT * FROM jerseys");
+        const row = await db.getrow("SELECT * FROM jerseys");
         if (row) {
             return new jerseys(...Object.values(row));
         }

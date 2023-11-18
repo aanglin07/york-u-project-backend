@@ -10,23 +10,11 @@ import { User } from './src/models/User.js'
 import {v4} from 'uuid'
 import dotenv from 'dotenv'
 
-import Db from 'mysql2-async'
-dotenv.config()
+dotenv.config()  
 
-const db = new Db({
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME
-})
+// 
 
-if (process.env.DATABASE_SOCKET) {
-    db.socketPath = process.env.DATABASE_SOCKET
-} else {
-    db.host = process.env.DATABASE_HOST
-}
-
-const PORT = process.env.ENV_PORT || 8080
-
+const PORT = process.env.PORT || 3000
 
 //import ratingsFilter from './filter-ratings.js'; //Imports from module, filter-ratings.
 const app = express()
@@ -94,7 +82,7 @@ app.use( jwt({secret: process.env.JWT_SECRET, algorithms: ['HS256']}) )
 app.listen(PORT, () => console.log(`API server ready on http://localhost:${PORT}`))
 
 
-export {app, db};
+export {app};
 
 
 
